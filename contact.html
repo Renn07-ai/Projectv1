@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #373b44, #4286f4);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
+      min-height: 100vh;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    input, textarea {
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px;
+      background-color: #00ffff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button.loading {
+      background-color: #00cccc;
+      cursor: wait;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #00ffcc;
+      display: none;
+    }
+
+    a {
+      margin-top: 30px;
+      color: #00ffff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Hubungi Saya</h1>
+
+  <form id="contact-form" action="https://formspree.io/f/xkgraodp"POST">
+    <input type="text" name="name" placeholder="Nama kamu" required>
+    <input type="email" name="email" placeholder="Email kamu" required>
+    <textarea name="message" placeholder="Tulis pesan kamu di sini..." rows="5" required></textarea>
+    <button type="submit" id="submit-btn">Kirim Pesan</button>
+    <div class="message" id="status-message"></div>
+  </form>
+
+  <a href="index.html">← Kembali ke Home</a>
+
+  <script>
+    const form = document.getElementById('contact-form');
+    const button = document.getElementById('submit-btn');
+    const message = document.getElementById('status-message');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      button.classList.add('loading');
+      button.disabled = true;
+      button.textContent = 'Mengirim...';
+
+      const formData = new FormData(form);
+      try {
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          message.style.display = 'block';
+          message.textContent = 'Pesan berhasil dikirim!';
+          form.reset();
+        } else {
+          message.style.display = 'block';
+          message.textContent = 'Terjadi kesalahan. Coba lagi.';
+        }
+      } catch (error) {
+        message.style.display = 'block';
+        message.textContent = 'Gagal terhubung. Coba beberapa saat lagi.';
+      }
+
+      button.classList.remove('loading');
+      button.disabled = false;
+      button.textContent = 'Kirim Pesan';
+    });
+  </script>
+
+</body>
+</html>
